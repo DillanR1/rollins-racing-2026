@@ -1,11 +1,100 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+// src/pages/index.astro
+const title = "Sponsor Ava Rollins – 2026 Senior Season";
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <script is:inline src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .venmo-qr { transition: transform .3s; }
+      .venmo-qr:hover { transform: scale(1.05); }
+    </style>
+  </head>
+
+  <body class="bg-gray-900 text-white font-sans leading-relaxed">
+    <!-- Hero -->
+    <header class="relative h-screen flex items-center justify-center overflow-hidden">
+      <img src="/images/hero.jpg" alt="Ava Rollins racing" class="absolute inset-0 w-full h-full object-cover opacity-60" />
+      <div class="relative text-center px-6 max-w-4xl mx-auto">
+        <h1 class="text-5xl md:text-7xl font-bold mb-4">Ava Rollins</h1>
+        <p class="text-2xl md:text-4xl mb-8">2026 Senior Quarter Midget Season</p>
+        <a href="#sponsor" class="inline-block bg-red-600 hover:bg-red-700 px-10 py-5 text-xl rounded-full font-bold animate-pulse">
+          Become a Sponsor
+        </a>
+      </div>
+    </header>
+
+    <!-- About -->
+    <section class="py-20 px-6 max-w-5xl mx-auto text-center">
+      <h2 class="text-4xl md:text-5xl font-bold mb-8">Ready to Compete at the Next Level</h2>
+      <p class="text-xl leading-relaxed max-w-3xl mx-auto">
+        Ava is stepping up into Senior classes for 2026! With years of experience and a brand-new custom suit from Vegas, 
+        she’s ready for faster cars, tighter racing, and bigger events across California.
+      </p>
+    </section>
+
+    <!-- Benefits Grid -->
+    <section class="bg-gray-800 py-20 px-6">
+      <div class="max-w-5xl mx-auto grid md:grid-cols-3 gap-10 text-center">
+        <div class="bg-gray-900 p-8 rounded-2xl">
+          <h3 class="text-2xl font-bold mb-4">High Visibility</h3>
+          <p>Your logo on car, suit, pit banner + dozens of races & social media</p>
+        </div>
+        <div class="bg-gray-900 p-8 rounded-2xl">
+          <h3 class="text-2xl font-bold mb-4">Community Reach</h3>
+          <p>Hundreds of families, strong youth motorsports presence</p>
+        </div>
+        <div class="bg-gray-900 p-8 rounded-2xl">
+          <h3 class="text-2xl font-bold mb-4">Positive Brand Impact</h3>
+          <p>Support a hardworking young athlete chasing her dreams</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sponsorship Levels -->
+    <section id="sponsor" class="py-20 px-6 max-w-6xl mx-auto">
+      <h2 class="text-4xl md:text-6xl font-bold text-center mb-16">2026 Sponsorship Levels</h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Primary -->
+        <div class="bg-gradient-to-b from-red-800 to-red-900 p-8 rounded-2xl text-center">
+          <h3 class="text-3xl font-bold mb-4">Primary<br>$1,500+</h3>
+          <ul class="text-left space-y-2 mb-6">
+            <li>✓ Largest logo placement</li>
+            <li>✓ Monthly social media features</li>
+            <li>✓ Signed photo + swag</li>
+          </ul>
+        </div>
+        <!-- Gold -->
+        <div class="bg-gradient-to-b from-yellow-600 to-yellow-800 p-8 rounded-2xl text-center">
+          <h3 class="text-3xl font-bold mb-4">Gold<br>$750</h3>
+          <ul class="text-left space-y-2">…</ul>
+        </div>
+        <!-- Silver & Friends (stacked on mobile) -->
+        <div class="space-y-8">
+          <div class="bg-gradient-to-b from-gray-600 to-gray-700 p-8 rounded-2xl text-center">…</div>
+          <div class="bg-gradient-to-b from-blue-600 to-blue-800 p-8 rounded-2xl text-center">…</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Venmo Call-to-Action -->
+    <section class="bg-red-700 py-20 text-center">
+      <h2 class="text-4xl md:text-5xl font-bold mb-8">Sponsor Today via Venmo</h2>
+      <img src="/images/venmo-qr.png" alt="Venmo QR Code" class="venmo-qr mx-auto w-80 h-80 rounded-2xl shadow-2xl" />
+      <p class="mt-8 text-2xl">@Jesse-Rollins-925</p>
+      <a href="venmo://pay?recipients=Jesse-Rollins-925" class="inline-block mt-8 bg-white text-red-700 px-12 py-6 rounded-full text-2xl font-bold hover:scale-105 transition">
+        Open Venmo App
+      </a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black py-12 text-center">
+      <p class="text-xl">Contact Jesse Rollins • jrollins925@gmail.com • (925) xxx-xxxx</p>
+    </footer>
+  </body>
+</html>
