@@ -1,6 +1,20 @@
 ---
 // src/pages/index.astro
-const title = "Sponsor Ava Rollins #66 – 2026 Senior Season";
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+// Proper typing — no more "as Level[]" nonsense
+type SponsorshipLevel = CollectionEntry<'sponsorshipLevels'>;
+const levels: SponsorshipLevel[] = await getCollection('sponsorshipLevels');
+
+// Pull all other content
+const pageEntry = (await getCollection('page'))[0];
+const page = pageEntry?.data || {};
+
+const benefits = await getCollection('benefits');
+
+const footerEntry = (await getCollection('footer'))[0];
+const footer = footerEntry?.data || {};
 ---
 
 <!DOCTYPE html>
@@ -8,7 +22,7 @@ const title = "Sponsor Ava Rollins #66 – 2026 Senior Season";
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{title}</title>
+  <title>{page.title || "Sponsor Ava Rollins #66 – 2026 Senior Season"}</title>
   <script is:inline src="https://cdn.tailwindcss.com"></script>
   <style>
     .venmo-qr { transition: transform .3s; }
@@ -25,150 +39,110 @@ const title = "Sponsor Ava Rollins #66 – 2026 Senior Season";
     </div>
   </header>
 
-<!-- Hero – reduced height, perfect framing on every device -->
-<section class="relative min-h-screen md:h-[80vh] lg:h-[75vh] flex items-center justify-center overflow-hidden">
-  <!-- Image container with explicit positioning -->
-  <div class="absolute inset-0 flex items-center justify-center">
-    <img 
-      src="/images/hero.jpeg" 
-      alt="Ava Rollins 1st place trophy" 
-      class="w-full max-w-none h-auto max-h-full object-contain object-center opacity-70"
-    />
-  </div>
-
-  <!-- Dark overlay -->
-  <div class="absolute inset-0 bg-black/40"></div>
-
-  <!-- Content – centered vertically in the reduced space -->
-  <div class="relative text-center px-6 z-10 w-full">
-    <h1 class="text-5xl md:text-7xl font-black mb-4 drop-shadow-2xl">Ava Rollins</h1>
-    <p class="text-2xl md:text-4xl mb-10 text-lime-400 drop-shadow-lg">2026 Senior Quarter Midget Season</p>
-    <a href="#sponsor" class="inline-block bg-purple-600 hover:bg-purple-500 px-12 py-6 text-2xl md:text-3xl rounded-full font-bold shadow-2xl">
-      Become a Sponsor
-    </a>
-  </div>
-</section>
-
-  <!-- About + Helmet Portrait -->
-  <section class="py-20 px-6 max-w-5xl mx-auto text-center">
-    <img src="/images/helmet.jpeg" alt="Ava with purple helmet" class="w-64 md:w-80 mx-auto rounded-2xl shadow-2xl mb-10" />
-    <h2 class="text-4xl md:text-5xl font-bold mb-8 text-purple-300">Ready to Compete at the Next Level</h2>
-    <p class="text-xl leading-relaxed max-w-3xl mx-auto">
-      Ava is stepping up into Senior classes for the 2026 season! With years of experience in Junior divisions and a brand-new custom suit from Vegas, she’s ready for faster cars, tighter racing, and bigger events across California.
-    </p>
-  </section>
-
-  <!-- Benefits Grid -->
-  <section class="py-20 px-6 bg-black/50">
-    <div class="max-w-5xl mx-auto grid md:grid-cols-3 gap-10 text-center">
-      <div class="bg-purple-900/70 backdrop-blur p-10 rounded-3xl border border-purple-500">
-        <h3 class="text-3xl font-bold mb-4 text-lime-400">High Visibility</h3>
-        <p class="text-lg">Logo on car, suit, pit banner • Dozens of races • Social media & photos all season</p>
-      </div>
-      <div class="bg-purple-900/70 backdrop-blur p-10 rounded-3xl border border-purple-500">
-        <h3 class="text-3xl font-bold mb-4 text-lime-400">Community Reach</h3>
-        <p class="text-lg">Hundreds of families • Strong youth motorsports presence • Local business exposure</p>
-      </div>
-      <div class="bg-purple-900/70 backdrop-blur p-10 rounded-3xl border border-purple-500">
-        <h3 class="text-3xl font-bold mb-4 text-lime-400">Positive Brand Impact</h3>
-        <p class="text-lg">Support a hardworking young athlete • Promote sportsmanship & youth development</p>
-      </div>
+  <!-- Hero -->
+  <section class="relative min-h-screen md:h-[80vh] lg:h-[75vh] flex items-center justify-center overflow-hidden">
+    <div class="absolute inset-0 flex items-center justify-center">
+      <img src={page.heroImage || "/images/hero.jpeg"} alt="Ava Rollins 1st place trophy"
+           class="w-full max-w-none h-auto max-h-full object-contain object-center opacity-70" />
+    </div>
+    <div class="absolute inset-0 bg-black/40"></div>
+    <div class="relative text-center px-6 z-10 w-full">
+      <h1 class="text-5xl md:text-7xl font-black mb-4 drop-shadow-2xl">Ava Rollins</h1>
+      <p class="text-2xl md:text-4xl mb-10 text-lime-400 drop-shadow-lg">2026 Senior Quarter Midget Season</p>
+      <a href="#sponsor" class="inline-block bg-purple-600 hover:bg-purple-500 px-12 py-6 text-2xl md:text-3xl rounded-full font-bold shadow-2xl">
+        Become a Sponsor
+      </a>
     </div>
   </section>
 
-  <!-- Cars Gallery -->
-  <section class="py-16 px-6">
-    <img src="/images/cars.jpeg" alt="Rollins Racing fleet – black/green, orange, purple" class="w-full max-w-6xl mx-auto rounded-3xl shadow-2xl" />
+  <!-- About + Helmet -->
+  <section class="py-20 px-6 max-w-5xl mx-auto text-center">
+    <img src={page.helmetImage || "/images/helmet.jpeg"} alt="Ava with purple helmet" class="w-64 md:w-80 mx-auto rounded-2xl shadow-2xl mb-10" />
+    <h2 class="text-4xl md:text-5xl font-bold mb-8 text-purple-300">Ready to Compete at the Next Level</h2>
+    <div class="text-xl leading-relaxed max-w-3xl mx-auto prose prose-invert" set:html={page.body} />
   </section>
 
-  <!-- Sponsorship Levels -->
+  <!-- Benefits Grid -->
+<section class="py-20 px-6 bg-black/50">
+  <div class="max-w-5xl mx-auto grid md:grid-cols-3 gap-10 text-center">
+    {benefits.map((b) => (
+      <div class="bg-purple-900/70 backdrop-blur p-10 rounded-3xl border border-purple-500">
+        <h3 class="text-3xl font-bold mb-8 text-lime-400">{b.data.title}</h3>
+        <ul class="text-left text-lg space-y-4">
+          <li class="flex items-start gap-3"><span class="text-lime-400 text-2xl">✓</span> {b.data.bullet1}</li>
+          <li class="flex items-start gap-3"><span class="text-lime-400 text-2xl">✓</span> {b.data.bullet2}</li>
+          {b.data.bullet3 && (
+            <li class="flex items-start gap-3"><span class="text-lime-400 text-2xl">✓</span> {b.data.bullet3}</li>
+          )}
+        </ul>
+      </div>
+    ))}
+  </div>
+</section>
+
+  <!-- Cars Gallery -->
+  <section class="py-16 px-6">
+    <img src="/images/cars.jpeg" alt="Rollins Racing fleet" class="w-full max-w-6xl mx-auto rounded-3xl shadow-2xl" />
+  </section>
+
+  <!-- Sponsorship Levels — FINAL, CLEAN, ZERO ERRORS -->
   <section id="sponsor" class="py-20 px-6 max-w-6xl mx-auto">
     <h2 class="text-5xl md:text-7xl font-black text-center mb-16 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">
       2026 Sponsorship Levels
     </h2>
 
     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-      <!-- Primary -->
-      <div class="bg-gradient-to-b from-purple-700 to-purple-900 p-8 rounded-3xl text-center border-4 border-lime-400 shadow-2xl">
-        <h3 class="text-3xl font-bold mb-4">Primary<br><span class="text-4xl text-lime-400">$1,500+</span></h3>
-        <ul class="text-left space-y-3 text-lg">
-          <li>✓ Largest logo on car & pit equipment</li>
-          <li>✓ Featured monthly social media posts</li>
-          <li>✓ Business advertised in pits</li>
-          <li>✓ Signed season photo + swag</li>
-        </ul>
-      </div>
+      {(levels.length ? levels : [
+        { data: { tier: "Primary", price: "$1,500+", gradient: "primary" as const, benefits: "<ul class='space-y-3'><li>✓ Largest logo on car & pit equipment</li><li>✓ Featured monthly social media posts</li><li>✓ Business advertised in pits</li><li>✓ Signed season photo + swag</li></ul>" } },
+        { data: { tier: "Gold", price: "$750", gradient: "gold" as const, benefits: "<ul class='space-y-3'><li>✓ Medium logo on cars & swag</li><li>✓ Social media shoutouts all season</li></ul>" } },
+        { data: { tier: "Silver", price: "$300", gradient: "silver" as const, benefits: "<ul class='space-y-3'><li>✓ Logo on car</li><li>✓ Welcome social media post</li></ul>" } },
+        { data: { tier: "Friends & Family", price: "$100", gradient: "cyan" as const, benefits: "<ul class='space-y-3'><li>✓ Name or small logo on car</li><li>✓ Thank-you shoutout</li></ul>" } },
+        { data: { tier: "High Five! 👋", price: "Any Amount", gradient: "highfive" as const, benefits: "<p class='text-2xl font-bold mb-4'>Donate What Feels Right</p><p class='text-lg italic'>Every dollar is a high-five from the stands — keeps the wheels turning and the smiles coming!</p><p class='text-sm text-gray-300 mt-6'>No amount too small, just good vibes.</p>" } }
+      ]).map((level) => {
+        const gradients = {
+          primary: "from-purple-700 to-purple-900 border-4 border-lime-400",
+          gold: "from-yellow-600 to-yellow-800",
+          silver: "from-gray-500 to-gray-700",
+          cyan: "from-cyan-600 to-cyan-800",
+          highfive: "from-purple-800/60 to-black border-4 border-dashed border-lime-400"
+        } as const;
 
-      <!-- Gold -->
-      <div class="bg-gradient-to-b from-yellow-600 to-yellow-800 p-8 rounded-3xl text-center shadow-2xl">
-        <h3 class="text-3xl font-bold mb-4">Gold<br><span class="text-4xl">$750</span></h3>
-        <ul class="text-left space-y-3 text-lg">
-          <li>✓ Medium logo on cars & swag</li>
-          <li>✓ Social media shoutouts all season</li>
-        </ul>
-      </div>
+        const gradient = gradients[level.data.gradient as keyof typeof gradients]!;
 
-      <!-- Silver -->
-      <div class="bg-gradient-to-b from-gray-500 to-gray-700 p-8 rounded-3xl text-center shadow-2xl">
-        <h3 class="text-3xl font-bold mb-4">Silver<br><span class="text-4xl">$300</span></h3>
-        <ul class="text-left space-y-3 text-lg">
-          <li>✓ Logo on car</li>
-          <li>✓ Welcome social media post</li>
-        </ul>
-      </div>
-
-      <!-- Friends & Family -->
-      <div class="bg-gradient-to-b from-cyan-600 to-cyan-800 p-8 rounded-3xl text-center shadow-2xl">
-        <h3 class="text-3xl font-bold mb-4">Friends & Family<br><span class="text-4xl">$100</span></h3>
-        <ul class="text-left space-y-3 text-lg">
-          <li>✓ Name or small logo on car</li>
-          <li>✓ Thank-you shoutout</li>
-        </ul>
-      </div>
-
-	  <!-- High Five! tier – fun & zero pressure -->
-	  <div class="bg-gradient-to-b from-purple-800/60 to-black p-8 rounded-3xl text-center shadow-2xl border-4 border-dashed border-lime-400">
-  		<h3 class="text-4xl font-black mb-4 text-lime-400">High Five! 👋</h3>
-  		<p class="text-2xl font-bold mb-4">Donate What Feels Right</p>
-  		<p class="text-lg italic">Every dollar is a high-five from the stands — keeps the wheels turning and the smiles coming!</p>
-  		<p class="text-sm text-gray-300 mt-6">No amount too small, just good vibes.</p>
-	  </div>
-
+        return (
+          <div class={`bg-gradient-to-b ${gradient} p-8 rounded-3xl text-center shadow-2xl`}>
+            <h3 class="text-3xl font-bold mb-4">
+              {level.data.tier}
+              {level.data.price && (
+                <>
+                  <br />
+                  <span class="text-4xl text-lime-400">{level.data.price}</span>
+                </>
+              )}
+            </h3>
+            <div class="text-left space-y-3 text-lg" set:html={level.data.benefits} />
+          </div>
+        );
+      })}
     </div>
   </section>
 
-</div> 
-
-  <!-- Combined Venmo + Facebook section – solid black, perfect funnel flow -->
-  <section class="py-24 px-6 text-center bg-black"> <!-- forced black, no purple alternation -->
+  <!-- Venmo + Facebook -->
+  <section class="py-24 px-6 text-center bg-black">
     <div class="max-w-5xl mx-auto">
       <h2 class="text-5xl md:text-7xl font-black mb-12 text-transparent bg-clip-text bg-gradient-to-r from-lime-400 to-cyan-400">
         Sponsor Today via Venmo
       </h2>
+      <img src={page.venmoQr || "/images/cropped-venmo.png"} alt="Venmo QR" class="venmo-qr mx-auto w-96 h-96 md:w-[520px] md:h-[520px] rounded-3xl shadow-2xl border-8 border-purple-500 bg-white p-8 mb-12" />
+      <p class="text-3xl font-bold text-purple-300 mb-12">{page.venmoHandle || "@RollinsRacing66"}</p>
 
-      <img
-        src="/images/cropped-venmo.png"
-        alt="Scan to sponsor via Venmo"
-        class="venmo-qr mx-auto w-96 h-96 md:w-[520px] md:h-[520px] rounded-3xl shadow-2xl border-8 border-purple-500 bg-white p-8 mb-12"
-      />
-      <p class="text-3xl font-bold text-purple-300 mb-12">@RollinsRacing66</p>
-
-      <!-- Primary: Send Payment (cyan → purple, black text) -->
-      <a
-        href="https://venmo.com/RollinsRacing66?txn=pay&note=Ava%20Rollins%202026%20Sponsorship"
-        target="_blank"
-        class="inline-block mb-12 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-black px-24 py-8 rounded-full text-4xl font-black shadow-2xl transform hover:scale-105 transition duration-300"
-      >
+      <a href={`https://venmo.com/${(page.venmoHandle || "@RollinsRacing66").replace("@","")}?txn=pay&note=Ava%20Rollins%202026%20Sponsorship`} target="_blank"
+         class="inline-block mb-12 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-black px-24 py-8 rounded-full text-4xl font-black shadow-2xl transform hover:scale-105 transition duration-300">
         Send Payment Now
       </a>
 
-      <!-- Secondary: Facebook — now EXACT same size, padding, text color, hover scale -->
-      <a
-        href="https://www.facebook.com/p/Rollins-Racing-100088566585645/"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="inline-block bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-black px-24 py-8 rounded-full text-4xl font-black shadow-2xl transform hover:scale-105 transition duration-300"
-      >
+      <a href={page.facebookUrl || "https://www.facebook.com/p/Rollins-Racing-100088566585645/"} target="_blank" rel="noopener noreferrer"
+         class="inline-block bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-black px-24 py-8 rounded-full text-4xl font-black shadow-2xl transform hover:scale-105 transition duration-300">
         Follow Ava on Facebook
       </a>
     </div>
@@ -176,7 +150,9 @@ const title = "Sponsor Ava Rollins #66 – 2026 Senior Season";
 
   <!-- Footer -->
   <footer class="bg-black py-12 text-center border-t-4 border-purple-600">
-    <p class="text-xl">Contact Jesse Rollins • jrollins925@gmail.com • (925) 997-5771</p>
+    <p class="text-xl">
+      Contact {footer.contactName || "Jesse Rollins"} • {footer.email || "jrollins925@gmail.com"} • {footer.phone || "(925) 997-5771"}
+    </p>
   </footer>
 </body>
 </html>
