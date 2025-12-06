@@ -26,10 +26,12 @@ pnpm-debug.log*
 # Local Netlify folder
 .netlify
 
-node_modulestina/
-src/content/
+# TinaCMS sensitive dirs/files
+tina/
 public/admin/
-.env
-src/content/
-public/admin/
-.env
+
+# Ignore content Markdown/MDX to prevent PII leaks, but track config.ts
+src/content/**/*.md
+src/content/**/*.mdx
+src/content/*/
+!src/content/config.ts  # Explicitly track this code file

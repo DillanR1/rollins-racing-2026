@@ -3,18 +3,41 @@
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 
-// Proper typing — no more "as Level[]" nonsense
+// Proper typing for all collections — fixes 'never' and overload errors
+type PageData = {
+  title: string;
+  body?: string;
+  heroImage?: string;
+  helmetImage?: string;
+  venmoQr?: string;
+  venmoHandle?: string;
+  facebookUrl?: string;
+};
+
+type FooterData = {
+  contactName: string;
+  email: string;
+  phone: string;
+};
+
 type SponsorshipLevel = CollectionEntry<'sponsorshipLevels'>;
+type Benefit = CollectionEntry<'benefits'>;
+type FooterEntry = CollectionEntry<'footer'>;
+type PageEntry = CollectionEntry<'page'>;
+
 const levels: SponsorshipLevel[] = await getCollection('sponsorshipLevels');
 
-// Pull all other content
-const pageEntry = (await getCollection('page'))[0];
-const page = pageEntry?.data || {};
+// Pull all other content with proper typing
+const pageEntry = (await getCollection('page'))[0] as PageEntry | undefined;
+const page = pageEntry?.data as PageData || {} as PageData;
 
-const benefits = await getCollection('benefits');
+// Fallback body if missing from CMS
+const bodyHtml = page.body || "<p>Ava Rollins is a 10-year-old racing sensation from Antioch, CA, gearing up for her 2026 Senior Quarter Midget season. With a passion for speed and a drive to win, Ava needs your support to compete at the highest level. Sponsorships help cover car maintenance, travel, and entry fees — join the team and be part of her journey to the podium!</p><p>From local tracks to national events, Ava's dedication shines through. Your sponsorship means visibility for your brand among hundreds of racing families and fans. Let's fuel her dreams together!</p>";
 
-const footerEntry = (await getCollection('footer'))[0];
-const footer = footerEntry?.data || {};
+const benefits = (await getCollection('benefits')) as Benefit[];
+
+const footerEntry = (await getCollection('footer'))[0] as FooterEntry | undefined;
+const footer = footerEntry?.data as FooterData || {} as FooterData;
 ---
 
 <!DOCTYPE html>
@@ -59,26 +82,26 @@ const footer = footerEntry?.data || {};
   <section class="py-20 px-6 max-w-5xl mx-auto text-center">
     <img src={page.helmetImage || "/images/helmet.jpeg"} alt="Ava with purple helmet" class="w-64 md:w-80 mx-auto rounded-2xl shadow-2xl mb-10" />
     <h2 class="text-4xl md:text-5xl font-bold mb-8 text-purple-300">Ready to Compete at the Next Level</h2>
-    <div class="text-xl leading-relaxed max-w-3xl mx-auto prose prose-invert" set:html={page.body} />
+    <div class="text-xl leading-relaxed max-w-3xl mx-auto prose prose-invert" set:html={bodyHtml} />
   </section>
 
   <!-- Benefits Grid -->
-<section class="py-20 px-6 bg-black/50">
-  <div class="max-w-5xl mx-auto grid md:grid-cols-3 gap-10 text-center">
-    {benefits.map((b) => (
-      <div class="bg-purple-900/70 backdrop-blur p-10 rounded-3xl border border-purple-500">
-        <h3 class="text-3xl font-bold mb-8 text-lime-400">{b.data.title}</h3>
-        <ul class="text-left text-lg space-y-4">
-          <li class="flex items-start gap-3"><span class="text-lime-400 text-2xl">✓</span> {b.data.bullet1}</li>
-          <li class="flex items-start gap-3"><span class="text-lime-400 text-2xl">✓</span> {b.data.bullet2}</li>
-          {b.data.bullet3 && (
-            <li class="flex items-start gap-3"><span class="text-lime-400 text-2xl">✓</span> {b.data.bullet3}</li>
-          )}
-        </ul>
-      </div>
-    ))}
-  </div>
-</section>
+  <section class="py-20 px-6 bg-black/50">
+    <div class="max-w-5xl mx-auto grid md:grid-cols-3 gap-10 text-center">
+      {benefits.map((b) => (
+        <div class="bg-purple-900/70 backdrop-blur p-10 rounded-3xl border border-purple-500">
+          <h3 class="text-3xl font-bold mb-8 text-lime-400">{b.data.title}</h3>
+          <ul class="text-left text-lg space-y-4">
+            <li class="flex items-start gap-3"><span class="text-lime-400 text-2xl">✓</span> {b.data.bullet1}</li>
+            <li class="flex items-start gap-3"><span class="text-lime-400 text-2xl">✓</span> {b.data.bullet2}</li>
+            {b.data.bullet3 && (
+              <li class="flex items-start gap-3"><span class="text-lime-400 text-2xl">✓</span> {b.data.bullet3}</li>
+            )}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
 
   <!-- Cars Gallery -->
   <section class="py-16 px-6">
