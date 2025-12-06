@@ -9,6 +9,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/mdx": "^4.3.12",
     "@tinacms/cli": "^2.0.1",
     "astro": "^5.16.4",
     "react-dnd": "^16.0.1",

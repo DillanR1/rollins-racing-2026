@@ -5,7 +5,7 @@ const page = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
-    body: z.string().optional(),  // Made optional to avoid required errors on files without it
+    body: z.string().optional(),
     heroImage: z.string().optional(),
     helmetImage: z.string().optional(),
     venmoQr: z.string().optional(),
@@ -16,7 +16,7 @@ const page = defineCollection({
 
 const sponsorshipLevels = defineCollection({
   loader: glob({
-    pattern: ['**/*.mdx', '!**/_*.mdx'],  // Only .mdx, exclude drafts
+    pattern: '**/*.mdx',  // Only .mdx, suppresses .md warning
     base: './src/content/sponsorshipLevels',
   }),
   schema: z.object({
@@ -32,8 +32,8 @@ const benefits = defineCollection({
   schema: z.object({
     title: z.string(),
     emoji: z.string().optional(),
-    bullet1: z.string(),
-    bullet2: z.string(),
+    bullet1: z.string().optional(),
+    bullet2: z.string().optional(),
     bullet3: z.string().optional(),
   }),
 });
@@ -41,9 +41,9 @@ const benefits = defineCollection({
 const footer = defineCollection({
   type: 'content',
   schema: z.object({
-    contactName: z.string(),
-    email: z.string(),
-    phone: z.string(),
+    contactName: z.string().optional(),
+    email: z.string().optional(),
+    phone: z.string().optional(),
   }),
 });
 
